@@ -13,6 +13,6 @@ for an anatomy autocomplete when the system was under heavy load.
    - prefix matches to the object's term (name)
    - prefix matches to one of the object's synonyms
    - other matches (eg- match to a second token in a string)
-5. Sort the matches alphanumerically within each bin.
+5. Sort the matches within each bin according to a comparator defined in the class of the object itself.
 6. Keep memory requirements reasonable.
 7. And return results quickly!
