@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ITMUtils {
-	/* Tokenize the given string for searching by included words.  The string is split
+	/* Tokenize the given string for searching by included words.  The string is converted to lowercase and split
 	 * on non-alphanumeric characters.
 	 */
 	public static List<String> tokenize(String searchString) {
