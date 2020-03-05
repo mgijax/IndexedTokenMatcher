@@ -74,13 +74,15 @@
 				<batchtest todir="${unittestoutput.dir}">
 					<fileset dir="${classes.dir}" includes="**/*Test.class">
 					</fileset>
+					<fileset dir="${classes.dir}" includes="**/*Tests.class">
+					</fileset>
 				</batchtest>
 		  	</junit>
 		  	<fail message="Test failure detected, check test results under ${unittestoutput.dir}" if="junit.failure" />
 	</target>
 
 	<target name="jar" depends="compile, test" description="Generates a jar.">
-		<jar jarfile="${dist.dir}/${jar.name}.jar" basedir="${classes.dir}" excludes="**/*Test.class"/>
+		<jar jarfile="${dist.dir}/${jar.name}.jar" basedir="${classes.dir}" excludes="**/*Tests.class"/>
 	</target>
 
 	<target name="javadocs" description="Generates the javadocs in the 'javadocs' directory.">
