@@ -10,7 +10,7 @@ public class ITMUtils {
 	public static List<String> tokenize(String searchString) {
 		// Lowercase the string, remove non-alphanumerics, consolidate multiple spaces to single ones,
 		// then split it on the single spaces.
-		String[] tokenArray = searchString.toLowerCase().replaceAll("[^a-z0-9]", " ").replaceAll("[ +]", " ").split(" ");
+		String[] tokenArray = searchString.toLowerCase().replaceAll("[^a-z0-9]", " ").trim().replaceAll("[ ]+", " ").split(" ");
 
 		return Arrays.asList(tokenArray);
 	}
