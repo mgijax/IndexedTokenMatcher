@@ -39,7 +39,7 @@ public class IndexedTokenManagerTests {
 	@Test
 	public void noMatches() {
 		IndexedTokenMatcher<FauxItem> itm = getPopulatedITM();
-		Assert.assertEquals(1,  itm.search("mortgage").size());
+		Assert.assertEquals(0,  itm.search("mortgage").size());
 	}
 	
 	// instantiate, populate, and return a sample matcher with ten items
