@@ -82,7 +82,7 @@
 	</target>
 
 	<target name="jar" depends="compile, test" description="Generates a jar.">
-		<jar jarfile="${dist.dir}/${jar.name}.jar" basedir="${classes.dir}" excludes="**/*Test.class"/>
+		<jar jarfile="${dist.dir}/${jar.name}.jar" basedir="${classes.dir}" excludes="**/*Tests.class"/>
 	</target>
 
 	<target name="javadocs" description="Generates the javadocs in the 'javadocs' directory.">
