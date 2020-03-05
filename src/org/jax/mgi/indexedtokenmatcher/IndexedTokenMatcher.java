@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /* Is: a helper class for making an autocomplete work against a list of vocabulary terms
  * Has: intelligence in how to match partial words from a search String against a list of vocab
@@ -16,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * Note: All searching is case-insensitive and only considers alphanumeric characters.  Returns are lowercase.
  */
 public class IndexedTokenMatcher<T> {
-	private final Logger logger = LoggerFactory.getLogger(IndexedTokenMatcher.class);
+	private MessageCollector logger = new MessageCollector();
 
 	//--- instance variables, all of which can be instantiated once and then the IndexedTokenMatcher shared across many threads ---//
 	
@@ -189,38 +187,43 @@ public class IndexedTokenMatcher<T> {
 		return matches;
 	}
 	
+	// get any debugging messages collected while building the IndexedTokenMatcher
+	public List<String> getLogMessages() {
+		return logger.getMessages();
+	}
+	
 	// Report to the log file various statistics about the indexes.  Apologies for ending each with a preposition,
 	// but it's just for analysis and debugging.
 	public void analyzeIndexes() {
 		List<Integer> ints = new ArrayList<Integer>();		// for computations
 		
-		logger.info("Analyzing keystone index:");
-		logger.info(" - " + this.keystone.size() + " keys");
+		logger.log("Analyzing keystone index:");
+		logger.log(" - " + this.keystone.size() + " keys");
 		for (String key : this.keystone.keySet()) {
 			ints.add(this.keystone.get(key).size());
 		}
-		logger.info(" - max of " + this.max(ints) + " searchable terms referred to");
-		logger.info(" - min of " + this.min(ints) + " searchable terms referred to");
-		logger.info(" - average of " + this.average(ints) + " searchable terms referred to");
-		logger.info(" - std dev of " + this.stddev(ints) + " searchable terms referred to");
+		logger.log(" - max of " + this.max(ints) + " searchable terms referred to");
+		logger.log(" - min of " + this.min(ints) + " searchable terms referred to");
+		logger.log(" - average of " + this.average(ints) + " searchable terms referred to");
+		logger.log(" - std dev of " + this.stddev(ints) + " searchable terms referred to");
 
 		ints = new ArrayList<Integer>();
-		logger.info("Analyzing prefixes index:");
-		logger.info(" - " + this.prefixes.size() + " keys");
+		logger.log("Analyzing prefixes index:");
+		logger.log(" - " + this.prefixes.size() + " keys");
 		for (String key : this.prefixes.keySet()) {
 			ints.add(this.prefixes.get(key).size());
 		}
-		logger.info(" - max of " + this.max(ints) + " keystone entries referred to");
-		logger.info(" - min of " + this.min(ints) + " keystone entries referred to");
-		logger.info(" - average of " + this.average(ints) + " keystone entries referred to");
-		logger.info(" - std dev of " + this.stddev(ints) + " keystone entries referred to");
+		logger.log(" - max of " + this.max(ints) + " keystone entries referred to");
+		logger.log(" - min of " + this.min(ints) + " keystone entries referred to");
+		logger.log(" - average of " + this.average(ints) + " keystone entries referred to");
+		logger.log(" - std dev of " + this.stddev(ints) + " keystone entries referred to");
 
 		ints = new ArrayList<Integer>();
 		List<Integer> ints1 = new ArrayList<Integer>();
 		List<Integer> ints2 = new ArrayList<Integer>();
 		List<Integer> ints3 = new ArrayList<Integer>();
-		logger.info("Analyzing term counts index:");
-		logger.info(" - " + this.termCount.size() + " keys");
+		logger.log("Analyzing term counts index:");
+		logger.log(" - " + this.termCount.size() + " keys");
 		for (String key : this.termCount.keySet()) {
 			ints.add(this.termCount.get(key));
 			if (key.length() == 1) {
@@ -231,33 +234,33 @@ public class IndexedTokenMatcher<T> {
 				ints3.add(this.termCount.get(key));
 			}
 		}
-		logger.info(" - max of " + this.max(ints) + " terms to search");
-		logger.info(" - min of " + this.min(ints) + " terms to search");
-		logger.info(" - average of " + this.average(ints) + " terms to search");
-		logger.info(" - std dev of " + this.stddev(ints) + " terms to search");
+		logger.log(" - max of " + this.max(ints) + " terms to search");
+		logger.log(" - min of " + this.min(ints) + " terms to search");
+		logger.log(" - average of " + this.average(ints) + " terms to search");
+		logger.log(" - std dev of " + this.stddev(ints) + " terms to search");
 
-		logger.info("Analyzing 1-char subset of term counts index:");
-		logger.info(" - " + ints1.size() + " keys");
-		logger.info(" - max of " + this.max(ints1) + " terms to search");
-		logger.info(" - min of " + this.min(ints1) + " terms to search");
-		logger.info(" - average of " + this.average(ints1) + " terms to search");
-		logger.info(" - std dev of " + this.stddev(ints1) + " terms to search");
+		logger.log("Analyzing 1-char subset of term counts index:");
+		logger.log(" - " + ints1.size() + " keys");
+		logger.log(" - max of " + this.max(ints1) + " terms to search");
+		logger.log(" - min of " + this.min(ints1) + " terms to search");
+		logger.log(" - average of " + this.average(ints1) + " terms to search");
+		logger.log(" - std dev of " + this.stddev(ints1) + " terms to search");
 
-		logger.info("Analyzing 2-char subset of term counts index:");
-		logger.info(" - " + ints2.size() + " keys");
-		logger.info(" - max of " + this.max(ints2) + " terms to search");
-		logger.info(" - min of " + this.min(ints2) + " terms to search");
-		logger.info(" - average of " + this.average(ints2) + " terms to search");
-		logger.info(" - std dev of " + this.stddev(ints2) + " terms to search");
+		logger.log("Analyzing 2-char subset of term counts index:");
+		logger.log(" - " + ints2.size() + " keys");
+		logger.log(" - max of " + this.max(ints2) + " terms to search");
+		logger.log(" - min of " + this.min(ints2) + " terms to search");
+		logger.log(" - average of " + this.average(ints2) + " terms to search");
+		logger.log(" - std dev of " + this.stddev(ints2) + " terms to search");
 
-		logger.info("Analyzing 3-char subset of term counts index:");
-		logger.info(" - " + ints3.size() + " keys");
-		logger.info(" - max of " + this.max(ints3) + " terms to search");
-		logger.info(" - min of " + this.min(ints3) + " terms to search");
-		logger.info(" - average of " + this.average(ints3) + " terms to search");
-		logger.info(" - std dev of " + this.stddev(ints3) + " terms to search");
+		logger.log("Analyzing 3-char subset of term counts index:");
+		logger.log(" - " + ints3.size() + " keys");
+		logger.log(" - max of " + this.max(ints3) + " terms to search");
+		logger.log(" - min of " + this.min(ints3) + " terms to search");
+		logger.log(" - average of " + this.average(ints3) + " terms to search");
+		logger.log(" - std dev of " + this.stddev(ints3) + " terms to search");
 
-		logger.info("Finished analysis of indexes");
+		logger.log("Finished analysis of indexes");
 	}
 	
 	//--- private methods ---//
@@ -329,12 +332,12 @@ public class IndexedTokenMatcher<T> {
 	
 	// Analyze the List of 'searchableTerms' to populate the indexes in 'keystone', 'prefixes', and 'termCount'.
 	private void createIndexes() {
-		logger.info("Building indexes for " + this.searchableTerms.size() + " terms");
+		logger.log("Building indexes for " + this.searchableTerms.size() + " terms");
 
 		// First, sort the searchable entries, so we only need to do binning of matches once they're found.
 		if (this.searchableTerms.size() > 0) {
 			Collections.sort(this.searchableTerms, this.searchableTerms.get(0).getComparator());
-			logger.info(" - sorted terms");
+			logger.log(" - sorted terms");
 		}
 		
 		this.keystone = new HashMap<String, List<Integer>>();
@@ -394,7 +397,7 @@ public class IndexedTokenMatcher<T> {
 			} // end -- for (String token : ...)
 		} // end -- for (int i = 0; ...)
 
-		logger.info(" - populated keystone and prefix maps");
+		logger.log(" - populated keystone and prefix maps");
 		
 		// Now that we have the 'keystone' and 'prefixes' we can compute the number of IndexedResults that we'd need to search
 		// for any token's prefix of 1-, 2-, or 3-characters.
@@ -425,7 +428,7 @@ public class IndexedTokenMatcher<T> {
 			this.termCount.put(prefix3, this.keystone.get(prefix3).size());
 		}
 		
-		logger.info(" - populated term counts");
+		logger.log(" - populated term counts");
 	} // end -- createIndexes() method
 	
 	// return the minimum value from the given list of integers (as a String)
@@ -452,7 +455,7 @@ public class IndexedTokenMatcher<T> {
 		for (Integer i : ints) {
 			sum = sum + i;
 		}
-		return Float.toString(((float) sum) / ints.size());
+		return String.format("%.3f", ((float) sum) / ints.size());
 	}
 
 	// return the standard deviation for the given list of integers (as a String)
@@ -472,6 +475,6 @@ public class IndexedTokenMatcher<T> {
 		
 		// stddev is square root of average distance from mean
 		double avgDistance = dsum / ints.size();
-		return Double.toString(Math.sqrt(avgDistance));
+		return String.format("%.3f", Math.sqrt(avgDistance));
 	}
 }
