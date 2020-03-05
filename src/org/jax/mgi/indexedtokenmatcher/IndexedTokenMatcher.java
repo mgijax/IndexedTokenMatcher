@@ -331,7 +331,7 @@ public class IndexedTokenMatcher<T> {
 	private void createIndexes() {
 		logger.info("Building indexes for " + this.searchableTerms.size() + " terms");
 
-		// First, sort the searchable entries by smart-alpha, so we only need to do binning of matches once they're found.
+		// First, sort the searchable entries, so we only need to do binning of matches once they're found.
 		if (this.searchableTerms.size() > 0) {
 			Collections.sort(this.searchableTerms, this.searchableTerms.get(0).getComparator());
 			logger.info(" - sorted terms");

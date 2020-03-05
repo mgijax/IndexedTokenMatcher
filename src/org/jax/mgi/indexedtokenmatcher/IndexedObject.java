@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface IndexedObject<T> {
 	// get a Comparator that can be used for sorting of the particular type of indexed objects
-	Comparator<T> getComparator();
+	Comparator<IndexedObject<T>> getComparator();
 	
 	// get a unique key that will uniquely identify the object
 	String getUniqueKey();

@@ -129,43 +129,45 @@ public class IndexedResult<T> {
 	
 	// get a Comparator for sorting these objects
 	public Comparator<IndexedResult<T>> getComparator() {
-//		return new ACTermComparator();
-		return null;
+		return new IndexedResultComparator();
 	}
 
 	//--- private inner classes ---//
 	
-	// Comparator for use in sorting ACTerms
-	/*
-	private class ACTermComparator implements Comparator<IndexedResult> {
-		public int compare(IndexedResult a, IndexedResult b) {
-			SmartAlphaComparator cmp = new SmartAlphaComparator();
+	// Comparator for use in sorting IndexedResults.  Note that this is non-optimal, as it requests a new comparator
+	// each time.  Not a big deal, though, as the IndexedTokenMatcher does all the sorting once up front.
+	private class IndexedResultComparator implements Comparator<IndexedResult<T>> {
+		public int compare(IndexedResult<T> a, IndexedResult<T> b) {
+			Comparator<IndexedObject<T>> objectComparator = a.getIndexedObject().getComparator();
 
-			// first compare the base terms themselves
-			int i = cmp.compare(a.sortableTerm, b.sortableTerm);
-			if (i == 0) {
-				// The terms match, so if only one is a synonym then the other should appear first, or if both are
-				// for synonyms, then compare the synonyms.
-				if (!a.isTerm) {
-					// a is a synonym
+			// If the indexed objects define a comparator, use it.
+			if (objectComparator != null) {
+				return objectComparator.compare(a.getIndexedObject(), b.getIndexedObject());
+			}
 
-					if (!b.isTerm) {
-						// b is a synonym, too
-						return cmp.compare(a.lowerString, b.lowerString);
-					} else {
-						// b is not a synonym, so it comes first
-						return 1;
-					}
-				} else if (!b.isTerm) {
-					// a is a raw term, b is a synonym, so a comes first
-					return -1;
+			// Otherwise define a default comparison function: sort by the term (name) and the unique ID.
+			IndexedObject<T> aObject = a.getIndexedObject();
+			IndexedObject<T> bObject = b.getIndexedObject();
+			
+			int i = 0;
+			if (aObject.getTerm() != null) {
+				if (bObject.getTerm() != null) {
+					// both strings are defined and can be compared
+					i = aObject.getTerm().compareTo(bObject.getTerm());
 				} else {
-					// a and b are both raw terms and they match, so just pick a
-					return -1;
+					// a has a term but not b, so a comes first
+					i = -1;
 				}
+			} else if (bObject.getTerm() != null) {
+				// a has no term but b does, so b comes first
+				i = 1;
+			}
+
+			// terms match, so sort by the unique ID (assume both exist - let the NullPointer happen if not)
+			if (i == 0) {
+				i = aObject.getUniqueKey().compareTo(bObject.getUniqueKey());
 			}
 			return i;
 		}
 	}
-	*/
 }
