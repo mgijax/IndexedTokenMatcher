@@ -74,6 +74,8 @@
 				<batchtest todir="${unittestoutput.dir}">
 					<fileset dir="${classes.dir}" includes="**/*Test.class">
 					</fileset>
+					<fileset dir="${classes.dir}" includes="**/*Tests.class">
+					</fileset>
 				</batchtest>
 		  	</junit>
 		  	<fail message="Test failure detected, check test results under ${unittestoutput.dir}" if="junit.failure" />
